@@ -1,0 +1,12 @@
+# Logistic Regression Model Hyperparameters
+param_grid:
+  # Regularization strength (inverse)
+  # Smaller values specify stronger regularization
+  C: [0.001, 0.01, 0.1, 1, 10, 100]
+  # Regularization type
+  penalty: ['l2']
+  # Optimization algorithm
+  solver: ['lbfgs', 'liblinear']
+  # Maximum iterations for solver
+  max_iter: [1000, 2000, 5000]
+

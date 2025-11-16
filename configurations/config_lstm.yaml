@@ -1,0 +1,20 @@
+# LSTM-RNN Model Hyperparameters
+# Sequence parameters
+history_volume: 10                      # Number of time steps in each sequence
+# Network architecture
+layers: [64, 32, 16, 1]                # LSTM layer sizes + output layer (last must be 1)
+# Optimization
+learning_rate: 0.001                    # Learning rate for Adam optimizer
+# Regularization
+lambda: 0.01                            # L2 regularization coefficient
+dropout: 0.2                            # Dropout rate for LSTM layers
+recurrent_dropout: 0.2                  # Recurrent dropout rate
+# Activation functions
+activation: 'tanh'                      # Activation for LSTM layers
+recurrent_activation: 'sigmoid'         # Recurrent activation for LSTM
+# Training parameters
+batch_size: 512                         # Batch size for training
+num_epochs: 50                          # Maximum number of training epochs
+# Early stopping and learning rate scheduling
+early_stopping_patience: 10             # Epochs to wait before early stopping
+lr_patience: 2                          # Epochs to wait before reducing learning rate
