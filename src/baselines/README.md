@@ -107,7 +107,7 @@ All baseline models follow a common pattern:
 
 All models expect data in the following format:
 
-- **DataFrame columns**: 
+- **DataFrame columns**:
   - `set_type`: One of 'train', 'valid', or 'test'
   - `label`: Binary target variable (0 or 1)
   - Additional columns: Feature variables
