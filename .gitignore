@@ -1,0 +1,9 @@
+__pycache__/
+.ipynb_checkpoints
+.cache
+.python-version
+.env
+
+data/
+models/
+results/
