@@ -1,107 +1,92 @@
+"""Logistic Regression baseline model training script.
+
+This script trains a logistic regression model with hyperparameter tuning using
+grid search with cross-validation. The model is trained on provided data with
+train/validation/test splits and evaluated using AUC score.
+
+Usage:
+    python run_logistic_regression.py --data_path path/to/data.parquet --output_dir path/to/results
+"""
+
 import argparse
 import os
-import joblib
+import sys
+
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_auc_score
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import PredefinedSplit
-from sklearn.preprocessing import StandardScaler
+
+# Add project root to path for imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
+from src.baselines.logistic_regression import LogisticRegressionModel
 
 
+def main(data_path: str, output_dir: str, normalize: bool = True) -> None:
+    """Main function to run logistic regression pipeline.
 
-def run_lor_pipeline(df: pd.DataFrame, normalize: bool = True):
-    # Split into features and label
-    feature_cols = [col for col in df.columns if col not in ['set_type', 'label']]
-
-    # Split data
-    train_df = df[df['set_type'] == 'train']
-    val_df = df[df['set_type'] == 'valid']
-    test_df = df[df['set_type'] == 'test']
-
-    if train_df.empty or val_df.empty or test_df.empty:
-        raise ValueError(f"Check set_type values. Found: "
-                         f"train={len(train_df)}, validation={len(val_df)}, test={len(test_df)}")
-
-    X_train, y_train = train_df[feature_cols], train_df['label']
-    X_val, y_val = val_df[feature_cols], val_df['label']
-    X_test, y_test = test_df[feature_cols], test_df['label']
-
-    # Merge train and validation for GridSearchCV
-    X_grid = pd.concat([X_train, X_val])
-    y_grid = pd.concat([y_train, y_val])
-
-    # Normalize if required
-    if normalize:
-        scaler = StandardScaler()
-        X_grid = scaler.fit_transform(X_grid)
-        X_test = scaler.transform(X_test)
-
-    test_fold = [-1] * len(X_train) + [0] * len(X_val)  # -1 = train, 0 = validation
-    ps = PredefinedSplit(test_fold)
-
-    # Define hyperparameter grid
-    param_grid = {
-        'C': [0.001, 0.01, 0.1, 1, 10, 100],
-        'penalty': ['l2'],
-        'solver': ['lbfgs', 'liblinear'],
-        'max_iter': [1000, 2000, 5000]
-    }
-
-    grid = GridSearchCV(
-        estimator=LogisticRegression(max_iter=1000),
-        param_grid=param_grid,
-        scoring='roc_auc',
-        cv=ps,
-        n_jobs=-1,
-        verbose=1
-    )
-
-    grid.fit(X_grid, y_grid)
-    best_model = grid.best_estimator_
-
-    print(f"Best Hyperparameters: {grid.best_params_}")
-
-    y_test_pred_proba = best_model.predict_proba(X_test)[:, 1]
-    auc_score = roc_auc_score(y_test, y_test_pred_proba)
-
-    print(f"Test AUC: {auc_score:.4f}")
-    return best_model, auc_score, grid.best_params_
-
-
-
-def main(data_path: str, output_dir: str):
+    Args:
+        data_path: Path to input parquet file with data
+        output_dir: Directory to save model and results
+        normalize: Whether to normalize features
+    """
+    # Create output directory
     os.makedirs(output_dir, exist_ok=True)
 
+    print(f"Loading data from: {data_path}")
     df = pd.read_parquet(data_path)
-    df = df.fillna(-1)
-    model, auc, best_params = run_lor_pipeline(df)
+    # Initialize model
+    model = LogisticRegressionModel(data=df, normalize=normalize)
+
+    # Train model
+    print("\n" + "="*50)
+    print("TRAINING")
+    print("="*50)
+    model.train()
+
+    # Evaluate model
+    print("\n" + "="*50)
+    print("EVALUATION")
+    print("="*50)
+    results = model.evaluate(output_dir_path=output_dir)
 
     # Save model
-    model_path = os.path.join(output_dir, "best_model.joblib")
-    joblib.dump(model, model_path)
+    print("\n" + "="*50)
+    print("SAVING MODEL")
+    print("="*50)
+    model.save_model(output_dir)
 
-    # Save AUC and hyperparameters
-    results_path = os.path.join(output_dir, "results.txt")
-    with open(results_path, 'w') as f:
-        f.write(f"AUC Score: {auc:.4f}\n")
-        f.write("Best Hyperparameters:\n")
-        for k, v in best_params.items():
-            f.write(f"  {k}: {v}\n")
-
-    print(f"Saved model to {model_path}")
-    print(f"Saved results to {results_path}")
+    print("\n" + "="*50)
+    print("COMPLETED")
+    print("="*50)
+    print(f"Results: {results}")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--data_path", type=str, default="data/mimiciv/p05_balance_by_label_numeric.parquet")
-    parser.add_argument("--output_dir", type=str, default="results/lor/mimiciv/normalize")
+    parser = argparse.ArgumentParser(
+        description="Train Logistic Regression baseline model with hyperparameter tuning"
+    )
+    parser.add_argument(
+        "--data_path",
+        type=str,
+        required=True,
+        help="Path to input parquet file containing train/valid/test data"
+    )
+    parser.add_argument(
+        "--output_dir",
+        type=str,
+        required=True,
+        help="Directory to save trained model and results"
+    )
+    parser.add_argument(
+        "--normalize",
+        action="store_true",
+        default=True,
+        help="Whether to normalize features using StandardScaler (default: True)"
+    )
+
     args = parser.parse_args()
 
-    if args.data_path is None:
-        raise ValueError("data_path is required")
-    if args.output_dir is None:
-        raise ValueError("output_dir is required")
+    # Validate arguments
+    if not os.path.exists(args.data_path):
+        raise FileNotFoundError(f"Data file not found: {args.data_path}")
 
-    main(args.data_path, args.output_dir)
+    main(args.data_path, args.output_dir, args.normalize)
