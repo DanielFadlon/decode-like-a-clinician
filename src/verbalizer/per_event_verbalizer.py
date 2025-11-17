@@ -9,7 +9,7 @@ import pandas as pd
 
 from .base_verbalizer import BaseVerbalizer
 from .event_processor import EventProcessor
-from .time_encoding import TimeApproach, get_current_time_text, get_event_time_encoding
+from .time_encoding import TimeApproach, get_current_time_text, get_event_time_encoding, extract_time_from_data
 from .formatters import BaseFormatter, TechnicalFormatter
 
 
@@ -98,7 +98,8 @@ class PerEventVerbalizer(BaseVerbalizer):
         Returns:
             Natural language description including current state and recent events
         """
-        current_time = row['TimeFromHospFeat']
+        # Extract current time from row
+        current_time = extract_time_from_data(row)
 
         # Build the text description
         text_parts = []
@@ -119,7 +120,8 @@ class PerEventVerbalizer(BaseVerbalizer):
 
         if not recent_events.empty:
             for event_index, event_data in recent_events.iterrows():
-                event_time = event_data['TimeFromHospFeat']
+                # Extract event time from event data
+                event_time = extract_time_from_data(event_data, event_index)
 
                 # Get time encoding for this event
                 time_encoding = get_event_time_encoding(

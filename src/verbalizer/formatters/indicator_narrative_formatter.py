@@ -8,6 +8,7 @@ from typing import Dict, Optional, List
 import pandas as pd
 
 from .base_formatter import BaseFormatter
+from ..time_encoding import extract_time_from_history_data
 
 
 class IndicatorNarrativeFormatter(BaseFormatter):
@@ -125,11 +126,8 @@ class IndicatorNarrativeFormatter(BaseFormatter):
         """
         text_lines = []
 
-        # Get current time
-        current_time = 0
-        if 'TimeFromHospFeat' in row and isinstance(row['TimeFromHospFeat'], list):
-            if len(row['TimeFromHospFeat']) > 0:
-                current_time = row['TimeFromHospFeat'][-1].get('time', 0)
+        # Get current time from history data
+        current_time = extract_time_from_history_data(row)
 
         # Process each feature
         for feature_name, feature_data in row.items():

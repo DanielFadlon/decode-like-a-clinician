@@ -10,7 +10,7 @@ import os
 
 from .base_verbalizer import BaseVerbalizer
 from .history_builder import HistoryBuilder
-from .time_encoding import TimeApproach, get_current_time_text
+from .time_encoding import TimeApproach, get_current_time_text, extract_time_from_history_data
 from .formatters import BaseFormatter
 
 
@@ -25,9 +25,10 @@ class PerIndicatorVerbalizer(BaseVerbalizer):
 
     def __init__(
         self,
-        table_data_path: str,
-        is_history_format: bool,
         time_approach: TimeApproach,
+        table_data: Optional[pd.DataFrame] = None,
+        table_data_path: Optional[str] = None,
+        is_history_format: bool = False,
         feature_names_config: Optional[Dict[str, str]] = None,
         feature_names_config_path: Optional[str] = None,
         formatter: Optional[BaseFormatter] = None,
@@ -41,9 +42,10 @@ class PerIndicatorVerbalizer(BaseVerbalizer):
         Initialize the per-indicator verbalizer.
 
         Args:
+            time_approach: Approach for encoding time information
+            table_data: DataFrame containing the data (alternative to table_data_path)
             table_data_path: Path to the data file (parquet or JSON)
             is_history_format: If True, data is already in history format; if False, will create history
-            time_approach: Approach for encoding time information
             feature_names_config: Dictionary mapping feature keys to human-readable names
             feature_names_config_path: Path to JSON file containing feature names mapping
             formatter: Formatter to use (IndicatorSeriesFormatter or IndicatorNarrativeFormatter)
@@ -62,10 +64,18 @@ class PerIndicatorVerbalizer(BaseVerbalizer):
         self.case_identifier_column = case_identifier_column or 'Encrypted_CaseNum'
 
         # Load or create history data
-        if is_history_format:
-            data = self._load_history_data(table_data_path)
+        if table_data is not None:
+            # Use provided DataFrame
+            if is_history_format:
+                data = table_data
+            else:
+                data = self._create_history_from_dataframe(table_data)
         else:
-            data = self._create_history_data(table_data_path, auto_save_history)
+            # Load from file path
+            if is_history_format:
+                data = self._load_history_data(table_data_path)
+            else:
+                data = self._create_history_data(table_data_path, auto_save_history)
 
         super().__init__(data, feature_names_config, feature_names_config_path)
 
@@ -81,6 +91,21 @@ class PerIndicatorVerbalizer(BaseVerbalizer):
             )
 
         self.formatter = formatter
+
+    def _create_history_from_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Create history format from a DataFrame."""
+        # Columns to exclude from history creation
+        exclude_columns = ['set_type', 'label', 'TimeFromHospFeat']
+
+        # Create history for each feature using HistoryBuilder
+        history_df = HistoryBuilder.create_full_history(
+            df,
+            timestamp_column='TimeFromHospFeat',
+            case_identifier_column=self.case_identifier_column,
+            exclude_columns=exclude_columns
+        )
+
+        return history_df
 
     def _load_history_data(self, data_path: str) -> pd.DataFrame:
         """Load data that is already in history format."""
@@ -122,11 +147,8 @@ class PerIndicatorVerbalizer(BaseVerbalizer):
         Returns:
             Natural language description of all indicator histories
         """
-        # Get current time
-        current_time = 0
-        if 'TimeFromHospFeat' in row and isinstance(row['TimeFromHospFeat'], list):
-            if len(row['TimeFromHospFeat']) > 0:
-                current_time = row['TimeFromHospFeat'][-1].get('time', 0)
+        # Get current time from history data
+        current_time = extract_time_from_history_data(row)
 
         # Add time context header
         time_context = get_current_time_text(self.time_approach, current_time)

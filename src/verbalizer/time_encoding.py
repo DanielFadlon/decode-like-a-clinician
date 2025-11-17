@@ -6,6 +6,8 @@ Provides various approaches for encoding temporal information in natural languag
 
 from enum import Enum
 from datetime import datetime, timedelta
+from typing import Union
+import pandas as pd
 
 
 class TimeApproach(Enum):
@@ -22,6 +24,65 @@ class TimeApproach(Enum):
 # Constants
 INTERVAL_SIZE = 6  # hours
 START_DATE = "2022-12-02 at 12:00:00"
+
+
+def extract_time_from_data(
+    data: Union[pd.Series, pd.DataFrame],
+    index_value: Union[int, float, tuple, pd.Timedelta, None] = None
+) -> float:
+    """
+    Extract time value (in hours) from pandas data structures.
+
+    Handles multiple scenarios:
+    1. TimeFromHospFeat exists as a column
+    2. Time is in the index (simple or multi-index)
+    3. Time might be a Timedelta that needs conversion
+
+    Args:
+        data: pandas Series or DataFrame (row or event data)
+        index_value: Optional index value to extract time from (e.g., row.name or event_index)
+
+    Returns:
+        Time value in hours (float)
+    """
+    # Case 1: TimeFromHospFeat exists as a column
+    if 'TimeFromHospFeat' in data.index:
+        return data['TimeFromHospFeat']
+
+    # Case 2: Extract from index
+    # Use provided index_value, or fall back to data.name
+    time_from_index = index_value if index_value is not None else data.name
+
+    # Handle multi-index (tuple) - take the last element
+    if isinstance(time_from_index, tuple):
+        time_from_index = time_from_index[-1]
+
+    # Case 3: Convert Timedelta to hours
+    if isinstance(time_from_index, pd.Timedelta):
+        return time_from_index.total_seconds() / 3600
+
+    # Already a numeric value (int or float)
+    return time_from_index
+
+
+def extract_time_from_history_data(row: pd.Series, default: float = 0) -> float:
+    """
+    Extract current time value from history-formatted data.
+
+    In history format, TimeFromHospFeat is a list of dictionaries with 'time' keys.
+    This function extracts the latest (last) time value from that list.
+
+    Args:
+        row: pandas Series containing history-formatted data
+        default: Default value to return if time cannot be extracted
+
+    Returns:
+        Current time value in hours (float), or default if not available
+    """
+    if 'TimeFromHospFeat' in row and isinstance(row['TimeFromHospFeat'], list):
+        if len(row['TimeFromHospFeat']) > 0:
+            return row['TimeFromHospFeat'][-1].get('time', default)
+    return default
 
 
 def add_time(date_iso_format_str: str, time_to_add_in_hours: float) -> str:

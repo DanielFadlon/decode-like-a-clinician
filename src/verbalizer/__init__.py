@@ -21,7 +21,12 @@ from .base_verbalizer import BaseVerbalizer
 from .simple_verbalizer import SimpleVerbalizer
 from .per_event_verbalizer import PerEventVerbalizer
 from .per_indicator_verbalizer import PerIndicatorVerbalizer
-from .time_encoding import TimeApproach, get_current_time_text, get_event_time_encoding
+from .time_encoding import (
+    TimeApproach,
+    get_current_time_text,
+    get_event_time_encoding,
+    extract_time_from_data
+)
 from .event_processor import EventProcessor
 from .history_builder import HistoryBuilder
 from .formatters import (
@@ -41,6 +46,7 @@ __all__ = [
     'TimeApproach',
     'get_current_time_text',
     'get_event_time_encoding',
+    'extract_time_from_data',
     'EventProcessor',
     'HistoryBuilder',
     'BaseFormatter',

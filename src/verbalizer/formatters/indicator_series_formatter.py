@@ -8,7 +8,14 @@ from typing import Dict, Optional, List
 import pandas as pd
 
 from .base_formatter import BaseFormatter
-from ..time_encoding import TimeApproach, get_relative_position_encoded_text, get_date_by_time_from_hosp, get_day_and_hour_text, INTERVAL_SIZE
+from ..time_encoding import (
+    TimeApproach,
+    get_relative_position_encoded_text,
+    get_date_by_time_from_hosp,
+    get_day_and_hour_text,
+    extract_time_from_history_data,
+    INTERVAL_SIZE
+)
 
 
 class IndicatorSeriesFormatter(BaseFormatter):
@@ -107,11 +114,8 @@ class IndicatorSeriesFormatter(BaseFormatter):
         """
         text_lines = []
 
-        # Get current time
-        current_time = 0
-        if 'TimeFromHospFeat' in row and isinstance(row['TimeFromHospFeat'], list):
-            if len(row['TimeFromHospFeat']) > 0:
-                current_time = row['TimeFromHospFeat'][-1].get('time', 0)
+        # Get current time from history data
+        current_time = extract_time_from_history_data(row)
 
         # Handle static features first (Age, CumulativeCost)
         for feature_name in ['Age', 'CumulativeCost']:
