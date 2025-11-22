@@ -1,6 +1,6 @@
 # Evaluation Scripts
 
-### Features
+## Evaluate - `evaluate.py`
 
 - **Evaluate a specific model checkpoint**: Evaluate a single trained model
 - **Evaluate all epochs**: Evaluate all checkpoints in a directory
@@ -79,4 +79,75 @@ python scripts/evaluation/evaluate.py \
     --model_path outputs/training_run/checkpoint-final \
     --output_dir results/final_eval \
     --eval_set all
+```
+
+
+## Zero Shot Evaluation - `zero_shot_evaluate.py`
+
+
+Main zero-shot evaluation script that:
+- Loads a pre-trained language model
+- Creates clinical prompts using domain-specific templates
+- Extracts next-token probabilities for classification tokens (0/1 or False/True)
+- Calculates evaluation metrics (accuracy, precision, recall, F1, AUC-ROC)
+- Identifies and logs invalid responses
+
+### Usage
+_________
+### Using Configuration File (Recommended)
+
+```bash
+python scripts/evaluation/zero_shot_evaluate.py --config configurations/zero_shot_config.yaml
+```
+
+### Using Command Line Arguments
+
+```bash
+python scripts/evaluation/zero_shot_evaluate.py \
+    --model_path path/to/model \
+    --data_path data/test.parquet \
+    --output_dir results/zero-shot/ \
+    --data_name mimic \
+    --true_token_id 29896 \
+    --false_token_id 29900 \
+    --trust_remote_code
+```
+
+### Configuration File Format
+-------
+Create a YAML configuration file with the following fields:
+
+```yaml
+# Model configuration
+model_path: "path/to/model"
+trust_remote_code: true
+torch_dtype: float16
+
+# Data configuration
+data_path: "data/test.parquet"
+data_name: mimic  # Options: mimic, tasmc, shebamc
+
+# Token IDs for binary classification
+true_token_id: 29896   # Token ID for positive class
+false_token_id: 29900  # Token ID for negative class
+
+# Output configuration
+output_dir: "results/zero-shot/"
+```
+
+## Determining Token IDs
+
+To find the correct token IDs for your model:
+
+```python
+from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("path/to/model", trust_remote_code=True)
+
+# For models that predict '1' and '0'
+true_id = tokenizer.encode('1', add_special_tokens=False)[0]
+false_id = tokenizer.encode('0', add_special_tokens=False)[0]
+
+print(f"True Token ID: {true_id}")
+print(f"False Token ID: {false_id}")
 ```

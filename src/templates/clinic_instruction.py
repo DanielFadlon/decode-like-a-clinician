@@ -50,3 +50,40 @@ def zero_shot_clinical_prompt_formatting_func(example):
     prompt = clinical_prompt_formatting_func(example, is_train=False)
     prompt += "\n" + "The answer should be a clear, deterministic Presence/No."
     return prompt
+
+
+def clinical_prompt_formatting_func_with_label_definition(example, data_name: str) -> str:
+    """
+    Formats the prompt for the clinical outcome prediction task. With label definition.
+    """
+    MIMIC_LABEL_DEFINITION = (
+        "A composite clinical outcome is considered present if any of the following clinical outcomes are observed:\n",
+        "   1 - In hospital mortality\n",
+        "   2 - Heart failure in 30 days\n",
+        "   3 - Length of stay > 15 days\n\n",
+    )
+
+    TASMC_SHEBAMC_LABEL_DEFINITION = (
+        "A composite clinical outcome is considered present if any of the following clinical outcomes are observed:\n",
+            "1 - In hospital mortality\n",
+            "2 - Heart failure in 30 days\n",
+            "3 - Length of stay > 15 days\n\n",
+    )
+
+    if data_name == 'mimic':
+        label_definition = MIMIC_LABEL_DEFINITION
+    elif data_name == 'tasmc' or data_name == 'shebamc':
+        label_definition = TASMC_SHEBAMC_LABEL_DEFINITION
+    else:
+        raise ValueError(f"Invalid data name: {data_name}. Supported data names: mimic, tasmc, shebamc")
+
+    prompt = (
+        f"Your task is to predict whether a composite clinical outcome will occur based on the patient’s health condition.\n"
+        f"{label_definition}"
+        f"Patient’s health condition:\n"
+        f"{example['text']}\n\n"
+        f"Indicate the composite clinical outcome: 0 - absent, 1 - presence."
+        f"The composite clinical outcome is expected to be "
+    )
+
+    return prompt

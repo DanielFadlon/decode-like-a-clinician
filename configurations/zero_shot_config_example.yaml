@@ -1,0 +1,20 @@
+# Zero-shot evaluation configuration for clinical outcome prediction
+
+# Model configuration
+model_path: "../physionet.org/files/me-llama/1.0.0/MeLLaMA-13B-chat"
+trust_remote_code: true
+torch_dtype: float16  # Options: float16, float32, bfloat16
+
+# Data configuration
+data_path: "data/mimiciv/multi4/sew_date_h6/test.parquet"
+data_name: mimic  # Options: mimic, tasmc, shebamc
+
+# Token IDs for binary classification
+# These should be determined by tokenizing '1' and '0' with your specific tokenizer
+# For MeLLaMA-13B-chat: true_token_id=29896 (for '1'), false_token_id=29900 (for '0')
+true_token_id: 29896   # Token ID for positive class ('1')
+false_token_id: 29900  # Token ID for negative class ('0')
+
+# Output configuration
+output_dir: "results/zero-shot/me-llama/mimic"
+
