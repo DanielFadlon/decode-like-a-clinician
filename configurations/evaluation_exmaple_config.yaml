@@ -1,0 +1,16 @@
+# Dataset configuration
+dataset_dir: /path/to/dataset
+dataset_type: parquet
+
+# Model configuration
+prompt_template_func_path: templates.clinic_instruction.create_prompt
+template_name: clinic_instruction
+
+# Evaluation configuration
+report_pred_threshold: 0.5
+model_prefix: checkpoint-
+
+# First word evaluation tokens
+first_word_eval:
+  positive: " Presence"
+  negative: " No"
