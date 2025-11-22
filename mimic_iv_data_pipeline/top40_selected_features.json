@@ -1,0 +1,198 @@
+{
+    "labs": [
+        {
+            "id": 50813,
+            "label": "Lactate",
+            "fluid": "Blood",
+            "category": "Chemistry",
+            "measure_unit": "mmol/L"
+        },
+        {
+            "id": 50820,
+            "label": "pH",
+            "fluid": "Blood",
+            "category": "Blood Gas",
+            "measure_unit": "units"
+        },
+        {
+            "id": 50818,
+            "label": "pCO2",
+            "category": "Blood Gas",
+            "fluid": "Blood",
+            "measure_unit": "mm Hg"
+        },
+        {
+            "id": 50821,
+            "label": "pO2",
+            "category": "Blood Gas",
+            "fluid": "Blood",
+            "measure_unit": "mm Hg"
+        },
+        {
+            "id": 50817,
+            "label": "Oxygen Saturation",
+            "category": "Blood Gas",
+            "fluid": "Blood",
+            "measure_unit": "%"
+        },
+        {
+            "id": 51222,
+            "label": "Hemoglobin",
+            "fluid": "Blood",
+            "category": "Chemistry",
+            "measure_unit": "g/dL"
+        },
+        {
+            "id": 51221,
+            "label": "Hematocrit",
+            "fluid": "Blood",
+            "category": "Hematology",
+            "measure_unit": "%"
+        },
+        {
+            "id": 51301,
+            "label": "White Blood Cells",
+            "category": "Hematology",
+            "fluid": "Blood",
+            "measure_unit": "mg/dL"
+        },
+        {
+            "id": 51265,
+            "label": "Platelet Count",
+            "category": "Hematology",
+            "fluid": "Blood",
+            "measure_unit": "K/uL"
+        },
+        {
+            "id": 50912,
+            "label": "Creatinine",
+            "fluid": "Blood",
+            "category": "Chemistry",
+            "measure_unit": "mg/dL"
+        },
+        {
+            "id": 51006,
+            "label": "Urea Nitrogen",
+            "category": "Chemistry",
+            "fluid": "Blood",
+            "measure_unit": "mg/dL"
+        },
+        {
+            "id": 50868,
+            "label": "Anion Gap",
+            "category": "Chemistry",
+            "fluid": "Blood",
+            "measure_unit": "mEq/L"
+        },
+        {
+            "id": 50983,
+            "label": "Sodium",
+            "category": "Chemistry",
+            "fluid": "Blood",
+            "measure_unit": "mEq/L"
+        },
+        {
+            "id": 50971,
+            "label": "Potassium",
+            "category": "Chemistry",
+            "fluid": "Blood",
+            "measure_unit": "mEq/L"
+        },
+        {
+            "id": 50931,
+            "label": "Glucose",
+            "category": "Chemistry",
+            "fluid": "Blood",
+            "measure_unit": "mg/dL"
+        },
+        {
+            "id": 50889,
+            "label": "C-Reactive Protein",
+            "category": "Chemistry",
+            "fluid": "Blood",
+            "measure_unit": "mg/L"
+        },
+        {
+            "id": 50882,
+            "label": "Bicarbonate",
+            "category": "Chemistry",
+            "fluid": "Blood",
+            "measure_unit": "mEq/L"
+        },
+        {
+            "id": 50863,
+            "label": "Alkaline Phosphatase",
+            "fluid": "Blood",
+            "category": "Chemistry",
+            "measure_unit": "IU/L"
+        },
+        {
+            "id": 50862,
+            "label": "Albumin",
+            "fluid": "Blood",
+            "category": "Chemistry",
+            "measure_unit": "g/dL"
+        },
+        {
+            "id": 50893,
+            "label": "Calcium, Total",
+            "category": "Chemistry",
+            "fluid": "Blood",
+            "measure_unit": "mg/dL"
+        },
+        {
+            "id": 50915,
+            "label": "D-Dimer",
+            "category": "Chemistry",
+            "fluid": "Blood",
+            "measure_unit": "ng/mL"
+        },
+        {
+            "id": 51200,
+            "label": "Eosinophils",
+            "category": "Hematology",
+            "fluid": "Blood",
+            "measure_unit": "%"
+        }
+    ],
+    "medications": {
+        "Vasopressors": [
+            "norepinephrine bitartrate",
+            "vasopressin",
+            "dopamine hydrochloride",
+            "epinephrine"
+        ],
+        "Diuretics": [
+          "furosemide"
+        ],
+        "Antibiotics": [
+          "vancomycin hydrochloride",
+          "cefepime"
+        ],
+        "Analgesics": [
+          "morphine sulfate"
+        ]
+    },
+    "procedures": [
+        {
+            "icd_code": "02HV33Z",
+            "label": "Insertion of Infusion Device into Superior Vena Cava"
+        },
+        {
+            "icd_code": "0BH17EZ",
+            "label": "Insertion of Endotracheal Airway into Trachea, Via Natural or Artificial Opening"
+        },
+        {
+            "icd_code": "3E0G76Z",
+            "label": "Introduction of Nutritional Substance into Upper GI, Via Natural or Artificial Opening"
+        },
+        {
+            "icd_code": "5A1D70Z",
+            "label": "Performance of Urinary Filtration, Intermitten, Less than 6 Hours Per Day"
+        },
+        {
+            "icd_code": "B211YZZ",
+            "label": "Fluoroscopy of Multiple Coronary Arteries using Other Contrast"
+        }
+    ]
+}
