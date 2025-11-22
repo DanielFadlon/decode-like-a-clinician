@@ -90,7 +90,7 @@ def print_configuration(config: dict, model_output_dir: str, yaml_path: str):
     print(f"  Strategy: {config.get('injection_strategy', 'NONE')}")
     print(f"  Parameters: {config.get('injection_params', {})}")
     print(f"\nPrompt:")
-    print(f"  Template function: {config.get('prompt_template_func_path', 'templates.clinic_instructions.clear_clinical_prompt_formatting_func')}")
+    print(f"  Template function: {config.get('prompt_template_func_path', 'templates.clinic_instructions.clinical_prompt_formatting_func')}")
     print("="*70 + "\n")
 
 
@@ -120,7 +120,7 @@ def main():
     should_quant_to_4bit = config.get('should_quant_to_4bit', False)
     prompt_template_func_path = config.get(
         'prompt_template_func_path',
-        'templates.clinic_instructions.clear_clinical_prompt_formatting_func'
+        'templates.clinic_instructions.clinical_prompt_formatting_func'
     )
 
     # Print configuration for logging
