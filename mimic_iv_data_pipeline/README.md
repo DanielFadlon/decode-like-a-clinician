@@ -1,6 +1,6 @@
 # MIMIC-IV
 
-> **Note:** This repository is a fork of the original [MIMIC-IV Data Pipeline](https://github.com/healthylaife/MIMIC-IV-Data-Pipeline). The original pipeline (`clinical_outcomes_pipeline.ipynb`) has been extended with a custom pipeline (`clinical_outcomes_pipeline.ipynb`) that implements specific preprocessing and cohort generation workflows tailored for mortality and heart failure prediction tasks.
+> **Note:** This repository is a fork of the original [MIMIC-IV Data Pipeline](https://github.com/healthylaife/MIMIC-IV-Data-Pipeline). The original pipeline (`mainPipeline.ipynb`) has been extended with a custom pipeline (`clinical_outcomes_pipeline.ipynb`) that implements specific preprocessing and cohort generation workflows tailored for mortality and heart failure prediction tasks.
 
 # Mimic-IV (Clinical Outcome Pipeline)
 To reproduce the MIMIC-IV data we used follow `clinical_outcomes_pipeline.ipynb`
