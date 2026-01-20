@@ -100,7 +100,7 @@ This repository includes an end-to-end pipeline for preprocessing MIMIC-IV data 
 Due to licensing restrictions, MIMIC-IV data is not included in this repository. Users must obtain access independently and follow the official PhysioNet requirements.
 
 🔗 **Upstream Pipeline**: The MIMIC-IV preprocessing pipeline in this repository is **adapted and extended** from the following upstream project: 
-https://github.com/healthylaife/MIMIC-IV-Data-Pipeline
+<https://github.com/healthylaife/MIMIC-IV-Data-Pipeline>
 
 👉 For detailed instructions on:
 - accessing MIMIC-IV,
@@ -146,3 +146,24 @@ python scripts/evaluate.py \
 ```
 
 The configs correspond **exactly** to those reported in the paper.
+
+---
+
+## 📜 License
+
+This repository is released under the **MIT License**.  
+See the [LICENSE](LICENSE) file for details.
+
+### Third-Party Components
+
+Parts of the MIMIC-IV preprocessing pipeline are adapted from the following upstream repository:
+- <https://github.com/healthylaife/MIMIC-IV-Data-Pipeline>
+
+The upstream code is used in accordance with its original license.  
+Modifications include temporal aggregation and clinician-inspired verbalization to support LLM fine-tuning, as described in the accompanying paper.
+
+### Dataset Licensing
+
+This repository does **not** include MIMIC-IV data.  
+Use of MIMIC-IV requires credentialed access and compliance with the **PhysioNet Data Use Agreement (DUA)**.
+
